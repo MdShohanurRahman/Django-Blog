@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+        <small>
+
+        </small>
+        <input type="submit" value="Login" class="btn btn-oulined-success">
+    </form>
+{% endblock %}

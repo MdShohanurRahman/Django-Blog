@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Shohan's blog {% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css"
+          integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ" crossorigin="anonymous">
+
+    {% block stylesheet %}
+    {% endblock %}
+
+
+</head>
+<body>
+{% include 'blog/navbar.html' %}
+<div class="container-fluid">
+    {% block content %}
+    {% endblock %}
+    <br>
+    <br>
+    <br>
+</div>
+
+{% block pagination %}
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+{#like button ajax#}
+<script type="text/javascript">
+    $(document).ready(function (event) {
+
+        {# reply toogle#}
+        $('.reply-btn').click(function () {
+            $(this).parent().parent().next('.replied-comments').fadeToggle()
+        });
+        {#end reply toogle  #}
+
+        $(document).on('click', '#like', function (event) {
+            event.preventDefault();
+            var pk = $(this).attr('value');
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'blog:like_post' %}',
+                data: {'post_id': pk, 'csrfmiddlewaretoken': '{{csrf_token}}'},
+                dataType: 'json',
+                success: function (response) {
+
+                    $('#like-section').html(response['form'])
+                    console.log($('#like-section').html(response['form']));
+                },
+                error: function (rs, e) {
+                    console.log(rs.responseText);
+                },
+            });
+        });
+    });
+
+    {#comment form#}
+    $(document.on)('submit', 'comment-form', function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: $(thi).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (response) {
+                $('.main-comment-section').html(response['form']);
+                $('textarea').val('');
+                $('.reply-btn').click(function () {
+                    $(this).parent().parent().next('.replied-comments').fadeToggle();
+                    $('textarea').val('');
+                });
+            },
+            error: function (rs, e) {
+                console.log(rs.responseText);
+            },
+        });
+    });
+
+    $(document.on)('submit', 'reply-form', function (event) {
+        event.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: $(thi).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (response) {
+                $('.main-comment-section').html(response['form']);
+                $('textarea').val('');
+                $('.reply-btn').click(function () {
+                    $(this).parent().parent().next('.replied-comments').fadeToggle();
+                    $('textarea').val('');
+                });
+            },
+            error: function (rs, e) {
+                console.log(rs.responseText);
+            },
+        });
+    });
+
+</script>
+</body>
+</html>

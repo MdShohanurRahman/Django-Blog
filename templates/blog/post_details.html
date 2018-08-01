@@ -1,0 +1,32 @@
+{% extends 'blog/base.html' %}
+{% block title %} {{ post.title }}|{{ block.super }}{% endblock %}
+{% block content %}
+    {{ post.title }}
+    <small>{{ post.timestamp|timesince }}</small>
+    <br>
+
+    created by : {{ post.author }}<br>
+    {{ post.body }}
+    <small>{{ post.timestamp|timesince }}</small>
+    <br>
+
+    <div id='like-section'>
+        {% include 'blog/like_section.html' %}
+    </div>
+
+
+    <br>
+    {#    {{ request.build_absolute_uri }}#}
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+        Facebook
+    </a>
+
+    <br>
+    <br>
+    <hr>
+
+    <div class="main-comment-section">
+        {% include 'blog/comments.html' %}
+    </div>
+
+{% endblock %}
